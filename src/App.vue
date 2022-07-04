@@ -1,13 +1,23 @@
 <script setup lang="ts">
 import WeaponChart from './components/WeaponChart.vue';
+import ComparisonChart from './components/ComparisonChart.vue';
+import { reactive } from 'vue';
 
+const state = reactive({
+  comparisonData: new Map()
+});
+
+function createComparisonData(id: string, data: number[][]) {
+  state.comparisonData.set(id, data);
+}
 </script>
 
 <template>
   <div id="app">
-    <WeaponChart id="chart1" />
-    <WeaponChart id="chart2" />
-    <WeaponChart id="chart3" />
+    <WeaponChart id="chart1" @data-changed="createComparisonData"/>
+    <WeaponChart id="chart2" @data-changed="createComparisonData" />
+    <WeaponChart id="chart3" @data-changed="createComparisonData" />
+    <!-- <ComparisonChart v-if="state.comparisonData.size > 0" id="cChart" :data="state.comparisonData" /> -->
   </div>
 </template>
 

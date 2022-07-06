@@ -3,12 +3,61 @@ import * as d3 from 'd3';
 import _ from 'lodash';
 import { ref, onMounted, onUpdated } from 'vue';
 
+enum Color {
+  Blue,
+  Green,
+  Grey,
+  Orange,
+  Purple,
+  Red,
+
+  Custom
+}
+
 const props = defineProps<{
   id: string,
   data: number[][]
 }>()
 
 let chart: d3.Selection<SVGGElement, unknown, HTMLElement, any>;
+
+function colorScale(domainStart: number, domainEnd: number, color: Color, custom?: number): d3.ScaleSequential<string, never> {
+  let interpolator = d3.interpolateBlues;
+  switch (color) {
+    case Color.Blue:
+      // interpolator = d3.interpolateBlues;
+      break;
+    case Color.Green:
+      interpolator = d3.interpolateGreens;
+      break;
+    case Color.Grey:
+      interpolator = d3.interpolateGreys;
+      break;
+    case Color.Orange:
+      interpolator = d3.interpolateOranges;
+      break;
+    case Color.Purple:
+      interpolator = d3.interpolatePurples;
+      break;
+    case Color.Red:
+      interpolator = d3.interpolateReds;
+      break;
+    case Color.Custom:
+      if (typeof custom !== 'undefined') {
+        interpolator = d3.interpolateHsl(d3.hsl(custom, 1, 1), d3.hsl(custom, 1, 0.4));
+      }
+      break;
+  }
+  return d3.scaleSequential()
+    .domain([domainStart, domainEnd])
+    .interpolator(interpolator);
+    // .interpolator(d3.interpolate("white", "green"))
+    // .interpolator(d3.interpolateRgb("#f7fcf5", "#00441b"))
+    // .interpolator(d3.interpolateHsl(d3.hsl(0,1,1), d3.hsl(0,1,0.4)))
+  // const rectColorReverse = d3.scaleSequential()
+  //   .interpolator(d3.interpolateGreys)
+  //   .domain([sortedData[sortedData.length-1], sortedData[0]])
+}
 
 function renderChart(data: number[][]): void {
   const sortedData = _.flatten(data).sort();
@@ -71,14 +120,6 @@ function renderChart(data: number[][]): void {
     .style("text-anchor", "middle")
     .text("Attack Boost");
 
-  // Build color scale
-  const rectColor = d3.scaleSequential()
-    .interpolator(d3.interpolateGreens)
-    .domain([sortedData[0], sortedData[sortedData.length-1]])
-  // const rectColorReverse = d3.scaleSequential()
-  //   .interpolator(d3.interpolateGreys)
-  //   .domain([sortedData[sortedData.length-1], sortedData[0]])
-
   // add the squares
   for (let i = 0; i < 8; i++) {
     let cell = chart.selectAll()
@@ -98,7 +139,7 @@ function renderChart(data: number[][]): void {
       .attr("height", cell_height)
       .attr("width", cell_width)
       .attr("fill", function(d, j) {
-        return rectColor(data[i][j]);
+        return colorScale(sortedData[0], sortedData[sortedData.length-1], Color.Green)(data[i][j]);
       });
 
     cell.append("text")

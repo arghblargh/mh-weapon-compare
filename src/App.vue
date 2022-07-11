@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import { reactive } from 'vue';
+import type { Color } from '@/types';
 import WeaponChart from './components/WeaponChart.vue';
 import ComparisonChart from './components/ComparisonChart.vue';
-import { reactive } from 'vue';
 
 const state = reactive({
-  comparisonData: new Map()
+  comparisonData: new Map(),
+  colorData: new Map()
 });
 
-function createComparisonData(id: string, data: number[][]) {
+function createComparisonData(id: string, data: number[][], color: Color) {
   state.comparisonData.set(id, data);
+  state.colorData.set(id, color);
 }
 </script>
 
@@ -17,7 +20,7 @@ function createComparisonData(id: string, data: number[][]) {
     <WeaponChart id="chart1" @data-changed="createComparisonData"/>
     <WeaponChart id="chart2" @data-changed="createComparisonData" />
     <WeaponChart id="chart3" @data-changed="createComparisonData" />
-    <!-- <ComparisonChart v-if="state.comparisonData.size > 0" id="cChart" :data="state.comparisonData" /> -->
+    <!-- <ComparisonChart v-if="state.comparisonData.size > 0" id="cChart" :data="state.comparisonData" :color-data="state.colorData" /> -->
   </div>
 </template>
 

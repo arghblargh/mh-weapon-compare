@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import _ from 'lodash';
 import { ref, reactive, onBeforeMount, onBeforeUpdate } from 'vue';
-import type { Ref } from 'vue'
-import AttackValueTable from './AttackValueTable.vue'
+import type { Ref } from 'vue';
+import { Color } from '@/types';
+import AttackValueTable from './AttackValueTable.vue';
 
 const props = defineProps<{
   id: string
@@ -10,7 +11,10 @@ const props = defineProps<{
 
 const emit = defineEmits(['dataChanged']);
 
-const state = reactive({ data: [[0]] });
+const state = reactive({ 
+  data: [[0]],
+  color: Color.Green
+});
 
 const attack = ref(180);
 const affinity = ref(30);
@@ -91,11 +95,12 @@ function generateData(attack: number, affinity: number, critBoost: 0 | 1 | 2 | 3
 
 onBeforeMount(() => {
   state.data = generateData(attack.value, affinity.value, critBoost.value, weaknessExploit.value);
+  state.color = Math.random() < 0.5 ? Color.Green : Color.Blue;
 })
 
 onBeforeUpdate(() => {
   state.data = generateData(attack.value, affinity.value, critBoost.value, weaknessExploit.value);
-  emit('dataChanged', props.id, state.data);
+  emit('dataChanged', props.id, state.data, state.color);
 })
 </script>
 
@@ -124,7 +129,7 @@ onBeforeUpdate(() => {
       </select>
     </div>
   </form>
-  <AttackValueTable :id="props.id" :data="state.data" />
+  <AttackValueTable :id="props.id" :data="state.data" :color="state.color"/>
 </template>
 
 <style>

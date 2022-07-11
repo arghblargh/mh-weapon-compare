@@ -2,21 +2,13 @@
 import * as d3 from 'd3';
 import _ from 'lodash';
 import { ref, onMounted, onUpdated } from 'vue';
-
-enum Color {
-  Blue,
-  Green,
-  Grey,
-  Orange,
-  Purple,
-  Red,
-
-  Custom
-}
+import { Color } from '@/types';
 
 const props = defineProps<{
   id: string,
-  data: number[][]
+  data: number[][],
+  color: Color,
+  colorData?: Color[][]
 }>()
 
 let chart: d3.Selection<SVGGElement, unknown, HTMLElement, any>;
@@ -139,7 +131,7 @@ function renderChart(data: number[][]): void {
       .attr("height", cell_height)
       .attr("width", cell_width)
       .attr("fill", function(d, j) {
-        return colorScale(sortedData[0], sortedData[sortedData.length-1], Color.Green)(data[i][j]);
+        return colorScale(sortedData[0], sortedData[sortedData.length-1], props.colorData !== undefined ? props.colorData[i][j] : props.color)(data[i][j]);
       });
 
     cell.append("text")

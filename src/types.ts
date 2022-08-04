@@ -9,3 +9,13 @@ export enum Color {
   Custom,
   Multi
 }
+
+export enum Sharpness {
+  Red,
+  Orange,
+  Yellow,
+  Green,
+  Blue,
+  White,
+  Purple
+}

@@ -17,7 +17,7 @@ function createComparisonData(id: string, data: number[][], color: Color) {
 
 <template>
   <div id="app">
-    <WeaponChart id="chart1" @data-changed="createComparisonData"/>
+    <WeaponChart id="chart1" @data-changed="createComparisonData" />
     <WeaponChart id="chart2" @data-changed="createComparisonData" />
     <WeaponChart id="chart3" @data-changed="createComparisonData" />
     <!-- <ComparisonChart v-if="state.comparisonData.size > 0" id="cChart" :data="state.comparisonData" :color-data="state.colorData" /> -->

@@ -67,29 +67,20 @@ onBeforeUpdate(() => {
 <template>
   <form>
     <div class="form-group">
-      <input
-        type="number"
-        placeholder="Attack"
-        v-model="attack" />
-      <input
-        type="number"
-        placeholder="Affinity(%)"
-        v-model="affinity" />
-      <select
-        v-model="sharpness" >
-        <option v-for="option in sharpnessOptions" :value="option.value">
+      <input type="number" placeholder="Attack" title="Attack" v-model="attack" />
+      <input type="number" placeholder="Affinity(%)" title="Affinity(%)" v-model="affinity" />
+      <select v-model="sharpness" title="Sharpness">
+        <option v-for="option in sharpnessOptions" :value="option.value" :title="calc.getSharpnessModifier(option.value).toFixed(2) + 'x'">
           {{ option.text }}
         </option>
       </select>
-      <select
-        v-model="critBoost" >
-        <option v-for="option in options" :value="option.value">
+      <select v-model="critBoost" title="Critical Boost">
+        <option v-for="option in options" :value="option.value" :title="(100 * calc.convertCritBoost(option.value as 0|1|2|3)) + '%'">
           {{ option.text }}
         </option>
       </select>
-      <select
-        v-model="weaknessExploit" >
-        <option v-for="option in options" :value="option.value">
+      <select v-model="weaknessExploit" title="Weakness Exploit">
+        <option v-for="option in options" :value="option.value" :title="(100 * calc.convertWeaknessExploit(option.value as 0|1|2|3)) + '%'">
           {{ option.text }}
         </option>
       </select>

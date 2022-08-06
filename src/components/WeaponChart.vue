@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { ref, reactive, onBeforeMount, onBeforeUpdate } from 'vue';
 import type { Ref } from 'vue';
 import { Color, Sharpness } from '@/types';
+import * as calc from '@/calcFunctions';
 import AttackValueTable from './AttackValueTable.vue';
 
 const props = defineProps<{
@@ -39,89 +40,14 @@ const sharpnessOptions = [
   { text: 'Purple', value: Sharpness.Purple }
 ]
 
-function applyAttackBoost(attack: number): number[] {
-  return [
-    attack,
-    attack + 3,
-    attack + 6,
-    attack + 9,
-    attack * 1.05 + 7,
-    attack * 1.06 + 8,
-    attack * 1.08 + 9,
-    attack * 1.10 + 10
-  ]
-}
-
-function applyCriticalEye(affinity: number): number[] {
-  return [
-    affinity,
-    affinity + 5,
-    affinity + 10,
-    affinity + 15,
-    affinity + 20,
-    affinity + 25,
-    affinity + 30,
-    affinity + 40
-  ]
-}
-
-// MHR sharpness modifiers:
-// Red   Orange  Yellow  Green  Blue   White  Purple
-// 0.50  0.75    1.00    1.05   1.20   1.32   1.39
-// 0.25  0.50    0.75    1.00   1.0625 1.15   1.25
-function getSharpnessModifier(sharpness: Sharpness): number {
-  switch (sharpness) {
-    case Sharpness.Red:
-      return 0.50;
-    case Sharpness.Orange:
-      return 0.75;
-    case Sharpness.Yellow:
-      return 1.00;
-    case Sharpness.Green:
-      return 1.05;
-    case Sharpness.Blue:
-      return 1.20;
-    case Sharpness.White:
-      return 1.32;
-    case Sharpness.Purple:
-      return 1.39;
-  }
-}
-
-function convertCritBoost(critBoost: 0 | 1 | 2 | 3): number {
-  switch (critBoost) {
-    case 0:
-      return .25;
-    case 1:
-      return .30;
-    case 2:
-      return .35;
-    case 3:
-      return .40;
-  }
-}
-
-function convertWeaknessExploit(weaknessExploit: 0 | 1 | 2 | 3): number {
-  switch (weaknessExploit) {
-    case 0:
-      return 0;
-    case 1:
-      return .15;
-    case 2:
-      return .30;
-    case 3:
-      return .50;
-  }
-}
-
 function generateData(attack: number, affinity: number, critBoost: 0 | 1 | 2 | 3, weaknessExploit: 0 | 1 | 2 | 3, sharpness: Sharpness): number[][] {
-  const atkValues = applyAttackBoost(attack);
-  const affValues = applyCriticalEye(affinity);
+  const atkValues = calc.applyAttackBoost(attack);
+  const affValues = calc.applyCriticalEye(affinity);
   let result: number[][] = new Array(8);
 
   for (let i = 0; i < 8; i++) {
-    let adjustedAff = Math.min(affValues[i] / 100 + convertWeaknessExploit(weaknessExploit), 1.0);
-    result[i] = atkValues.map(val => val * (1 + adjustedAff * (adjustedAff < 0 ? 0.25 : convertCritBoost(critBoost))) * getSharpnessModifier(sharpness));
+    let adjustedAff = Math.min(affValues[i] / 100 + calc.convertWeaknessExploit(weaknessExploit), 1.0);
+    result[i] = atkValues.map(val => val * (1 + adjustedAff * (adjustedAff < 0 ? 0.25 : calc.convertCritBoost(critBoost))) * calc.getSharpnessModifier(sharpness));
   }
 
   return result;

@@ -5,6 +5,7 @@ import type { Ref } from 'vue';
 import { Color, Sharpness } from '@/types';
 import * as calc from '@/calcFunctions';
 import AttackValueTable from './AttackValueTable.vue';
+import { color } from 'd3-color';
 
 const props = defineProps<{
   id: string
@@ -30,15 +31,15 @@ const options = [
   { text: '3', value: 3 }
 ];
 
-const sharpnessOptions = [
-  { text: 'Red', value: Sharpness.Red },
-  { text: 'Orange', value: Sharpness.Orange },
-  { text: 'Yellow', value: Sharpness.Yellow },
-  { text: 'Green', value: Sharpness.Green },
-  { text: 'Blue', value: Sharpness.Blue },
-  { text: 'White', value: Sharpness.White },
-  { text: 'Purple', value: Sharpness.Purple }
-]
+const sharpnessOptions = new Map<Sharpness, { text: string, color: string, textColor: string }>([
+  [ Sharpness.Red, { text: 'Red', color: '#FF0000', textColor: 'white' } ],
+  [ Sharpness.Orange, { text: 'Orange', color: '#FF9200', textColor: 'white' } ],
+  [ Sharpness.Yellow, { text: 'Yellow', color: '#FFFF00', textColor: 'black' } ],
+  [ Sharpness.Green, { text: 'Green', color: '#00D300', textColor: 'black' } ],
+  [ Sharpness.Blue, { text: 'Blue', color: '#0000FF', textColor: 'white' } ],
+  [ Sharpness.White, { text: 'White', color: '#FFFFFF', textColor: 'black' } ],
+  [ Sharpness.Purple, { text: 'Purple', color: '#6B00FF', textColor: 'white' } ]
+])
 
 function generateData(attack: number, affinity: number, critBoost: 0 | 1 | 2 | 3, weaknessExploit: 0 | 1 | 2 | 3, sharpness: Sharpness): number[][] {
   const atkValues = calc.applyAttackBoost(attack);
@@ -69,9 +70,9 @@ onBeforeUpdate(() => {
     <div class="form-group">
       <input type="number" placeholder="Attack" title="Attack" v-model="attack" />
       <input type="number" placeholder="Affinity(%)" title="Affinity(%)" v-model="affinity" />
-      <select v-model="sharpness" title="Sharpness">
-        <option v-for="option in sharpnessOptions" :value="option.value" :title="calc.getSharpnessModifier(option.value).toFixed(2) + 'x'">
-          {{ option.text }}
+      <select v-model="sharpness" title="Sharpness" :style="'background-color:' + sharpnessOptions.get(sharpness)?.color + '; color:' + sharpnessOptions.get(sharpness)?.textColor">
+        <option v-for="option in sharpnessOptions" :value="option[0]" :style="'background-color:' + option[1].color + '; color:' + option[1].textColor" :title="calc.getSharpnessModifier(option[0]).toFixed(2) + 'x'">
+          {{ option[1].text }}
         </option>
       </select>
       <select v-model="critBoost" title="Critical Boost">

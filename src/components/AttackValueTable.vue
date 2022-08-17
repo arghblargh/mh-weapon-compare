@@ -52,7 +52,7 @@ function colorScale(domainStart: number, domainEnd: number, color: Color, custom
 }
 
 function renderChart(data: number[][]): void {
-  const sortedData = _.flatten(data).sort();
+  const sortedData = _.flatten(data).sort((a, b) => a - b);
 
   const margin = 30;
   const svg_width = 520;

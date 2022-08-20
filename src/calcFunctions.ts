@@ -43,6 +43,7 @@ export function getSharpnessModifier(sharpness: Sharpness): number {
     case Sharpness.Orange:
       return 0.75;
     case Sharpness.Yellow:
+    case Sharpness.None:
       return 1.00;
     case Sharpness.Green:
       return 1.05;

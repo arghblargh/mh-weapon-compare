@@ -5,7 +5,6 @@ import type { Ref } from 'vue';
 import { Color, Sharpness } from '@/types';
 import * as calc from '@/calcFunctions';
 import AttackValueTable from './AttackValueTable.vue';
-import { color } from 'd3-color';
 
 const props = defineProps<{
   id: string
@@ -32,6 +31,7 @@ const options = [
 ];
 
 const sharpnessOptions = new Map<Sharpness, { text: string, color: string, textColor: string }>([
+  [ Sharpness.None, { text: 'Gunner', color: '#FFFFFF', textColor: 'black' } ],
   [ Sharpness.Red, { text: 'Red', color: '#FF0000', textColor: 'white' } ],
   [ Sharpness.Orange, { text: 'Orange', color: '#FF9200', textColor: 'white' } ],
   [ Sharpness.Yellow, { text: 'Yellow', color: '#FFFF00', textColor: 'black' } ],

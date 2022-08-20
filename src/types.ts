@@ -17,5 +17,7 @@ export enum Sharpness {
   Green,
   Blue,
   White,
-  Purple
+  Purple,
+
+  None
 }
